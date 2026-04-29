@@ -72,3 +72,16 @@ if (backHomeBtn) {
         window.location.href = "index.html"; // Returns to home page
     });
 }
+// --- Instructions / How to Play Logic ---
+const helpBtnHome = document.getElementById('help-btn-home');
+const helpBtnGame = document.getElementById('help-btn');
+const closeHelp = document.getElementById('close-help');
+const gotItBtn = document.getElementById('got-it-btn');
+
+const openHelp = () => { if (helpModal) helpModal.style.display = 'flex'; };
+const hideHelp = () => { if (helpModal) helpModal.style.display = 'none'; };
+
+if (helpBtnHome) helpBtnHome.addEventListener('click', openHelp);
+if (helpBtnGame) helpBtnGame.addEventListener('click', openHelp);
+if (closeHelp) closeHelp.addEventListener('click', hideHelp);
+if (gotItBtn) gotItBtn.addEventListener('click', hideHelp);
