@@ -3,9 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>GMT NEON WORD</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    
+    <canvas id="particles"></canvas>
+
+    <div class="main-menu" id="main-menu">
+        <h1 class="game-title">GUESS<br>MY THOUGHT</h1>
+        
+        <div id="player-profile" class="profile-box" style="display: none;">
+            <p id="display-name">WELCOME BACK!</p>
+            <p id="credit-score">CREDITS: 0</p>
+        </div>
+
+<div class="menu-buttons">
+    <button class="start-game-btn" id="start-game-btn">START GAME</button>
+    <button class="glow-btn" id="settings-btn" style="font-size: 14px; margin-top: 10px;">SETTINGS</button>
+    <button class="help-btn-home" id="help-btn-home">HOW TO PLAY</button>
+    <button class="exit-btn" id="exit-btn" style="display: none;">LOGOUT</button>
+</div>
+
+<div id="settings-modal" class="modal-overlay">
+    <div class="modal-box neon-border">
+        <h2>SYSTEM SETTINGS</h2>
+        <div class="setting-row">
+            <p>VISUAL THEME</p>
+            <button id="theme-toggle-btn" class="glow-btn" style="font-size: 12px; width: 140px;">DARK MODE</button>
+        </div>
+        <div class="setting-row">
+            <p>SOUND VOLUME</p>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5">
+        </div>
+        <button id="close-settings" class="confirm-btn" style="margin-top: 20px;">SAVE & EXIT</button>
+    </div>
+</div>
+    </div>
+
+    <div id="help-modal" class="modal-overlay">
+        <div class="modal-box neon-border">
+            <span id="close-help" class="close-btn">&times;</span>
+            <h2>HOW TO PLAY</h2>
+            <ul class="help-list">
+                <li>Guess the <strong>NEON WORD</strong> in 6 tries.</li>
+                <li>Each guess must be 5 letters.</li>
+                <li><strong>Pos:</strong> Letters in the correct spot.</li>
+                <li><strong>Letter:</strong> Correct letters in the wrong spot.</li>
+            </ul>
+            <button id="got-it-btn" class="confirm-btn">GOT IT!</button>
+        </div>
+    </div>
+
+    <div id="name-modal" class="modal">
+        <div class="modal-content">
+            <h2>ENTER PLAYER NAME</h2>
+            <input type="text" id="player-name" placeholder="Your Name">
+            <button id="confirm-btn" class="confirm-btn">START</button>
+        </div>
+    </div>
+
+    <div id="exit-modal" class="modal-overlay">
+        <div class="modal-box neon-border-red">
+            <h2>LOGOUT?</h2>
+            <p style="margin-bottom: 20px;">Are you sure you want to exit and clear your session?</p>
+            <div class="modal-buttons">
+                <button id="cancel-exit" class="confirm-btn">CANCEL</button>
+                <button id="confirm-exit" class="exit-btn-final">LOGOUT</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading-screen" class="loading" style="display: none;">
+        <div class="loader"></div>
+        <p>Loading Game...</p>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
