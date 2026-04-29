@@ -36,3 +36,39 @@ function init() {
     }
 }
 init();
+// --- Navigation & Game Initialization ---
+if (startGameBtn) {
+    const nameModal = document.getElementById('name-modal');
+    const confirmBtn = document.getElementById('confirm-btn');
+    const playerNameInput = document.getElementById('player-name');
+    const loadingScreen = document.getElementById('loading-screen');
+
+    startGameBtn.addEventListener('click', () => {
+        if (localStorage.getItem('playerName')) {
+            if (mainMenu) mainMenu.style.display = "none";
+            loadingScreen.style.display = "flex";
+            setTimeout(() => { window.location.href = "game.html"; }, 1500);
+        } else {
+            nameModal.style.display = "flex";
+        }
+    });
+
+    confirmBtn.addEventListener('click', () => {
+        const name = playerNameInput.value.trim();
+        if (name === "") {
+            playerNameInput.style.border = "1px solid red";
+            return;
+        }
+        localStorage.setItem('playerName', name);
+        nameModal.style.display = "none";
+        if (mainMenu) mainMenu.style.display = "none";
+        loadingScreen.style.display = "flex";
+        setTimeout(() => { window.location.href = "game.html"; }, 2000);
+    });
+}
+
+if (backHomeBtn) {
+    backHomeBtn.addEventListener('click', () => {
+        window.location.href = "index.html"; // Returns to home page
+    });
+}
