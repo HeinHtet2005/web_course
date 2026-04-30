@@ -232,3 +232,31 @@ function handleInput(key) {
 }
 
 document.addEventListener("keydown", (e) => handleInput(e.key.toUpperCase()));
+
+// --- Particles Background ---
+const canvas = document.getElementById("particles");
+if (canvas) {
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    let particles = [];
+    for (let i = 0; i < 60; i++) particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, s: Math.random() * 2, v: Math.random() * 0.5 });
+    function anim() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "#00f0ff";
+        particles.forEach(p => {
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.s, 0, Math.PI * 2); ctx.fill();
+            p.y += p.v; if (p.y > canvas.height) p.y = 0;
+        });
+        requestAnimationFrame(anim);
+    }
+    anim();
+}
+
+if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+        localStorage.removeItem("dailyWord");
+        localStorage.removeItem("dailyDate");
+        location.reload();
+    });
+}
