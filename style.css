@@ -684,3 +684,153 @@ body.light-mode .score-pill .stat-value {
     color: #38a169; /* Flat, professional green */
     text-shadow: none;
 }
+/* =========================================
+   INDEX PAGE UI UPGRADES
+========================================= */
+
+/* 1. Gradient Game Title */
+.game-title.gradient-text {
+    background: linear-gradient(135deg, #00f0ff 0%, #ff00ff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(0, 240, 255, 0.2); /* Soft glow behind the gradient */
+    font-weight: 800;
+}
+
+body.light-mode .game-title.gradient-text {
+    background: linear-gradient(135deg, #2b6cb0 0%, #d53f8c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+}
+
+/* 2. Agent Card (Replaces basic profile box) */
+.agent-card {
+    display: flex;
+    justify-content: center; /* Centers the details perfectly */
+    align-items: center;
+    background: rgba(10, 10, 10, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    border-radius: 16px;
+    padding: 20px 40px; /* Slightly wider padding looks better without the icon */
+    margin-bottom: 40px;
+    box-shadow: 0 10px 30px rgba(0, 240, 255, 0.15);
+    transition: transform 0.3s;
+}
+
+.agent-card:hover { transform: translateY(-3px); }
+
+
+.agent-details {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Increased gap slightly to give the text more breathing room */
+    text-align: center; /* Center the text inside the columns */
+}
+
+.agent-info, .agent-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Aligns the Label and Number in the center */
+}
+
+.agent-label {
+    font-size: 10px;
+    color: #a0aec0;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.agent-name {
+    font-size: 18px;
+    color: #ffffff;
+    letter-spacing: 1px;
+}
+
+.agent-credits {
+    font-size: 24px;
+    color: #00ff44;
+    text-shadow: 0 0 10px rgba(0, 255, 68, 0.5);
+}
+
+.agent-divider {
+    width: 2px;
+    height: 40px;
+    background: rgba(0, 240, 255, 0.3);
+}
+
+/* Light Mode Overrides for Agent Card */
+body.light-mode .agent-card {
+    background: #ffffff;
+    border-color: #e2e8f0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+body.light-mode .agent-avatar { background: #f7fafc; border-color: #cbd5e0; }
+body.light-mode .agent-name { color: #1a202c; }
+body.light-mode .agent-credits { color: #38a169; text-shadow: none; }
+body.light-mode .agent-divider { background: #e2e8f0; }
+
+/* 3. Premium Settings Modal */
+.settings-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.premium-setting {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px 20px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    margin: 0 !important; /* Overrides old setting-row margin */
+}
+
+.setting-label {
+    font-size: 14px;
+    color: #cbd5e0;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+.setting-toggle {
+    padding: 8px 20px !important;
+    font-size: 12px !important;
+    width: 100px;
+}
+
+/* Premium Volume Slider */
+.premium-slider {
+    width: 100% !important;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.premium-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #00f0ff;
+    cursor: pointer;
+    box-shadow: 0 0 10px #00f0ff;
+}
+
+body.light-mode .premium-setting { background: #f7fafc; border-color: #edf2f7; }
+body.light-mode .setting-label { color: #4a5568; }
+body.light-mode .premium-slider { background: #e2e8f0; }
+body.light-mode .premium-slider::-webkit-slider-thumb { background: #3182ce; box-shadow: none; }
+
+/* Mobile Adjustments for Agent Card */
+@media screen and (max-width: 480px) {
+    .agent-card { flex-direction: column; text-align: center; gap: 10px; padding: 15px; }
+    .agent-details { flex-direction: column; gap: 10px; }
+    .agent-info, .agent-stats { align-items: center; }
+    .agent-divider { width: 80%; height: 2px; }
+}

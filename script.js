@@ -129,17 +129,45 @@ let attempts = 0;
 const maxAttempts = 6;
 
 if (submitBtn) {
-    const words = ["PLANE", "CRANE", "LIGHT", "BRAVE", "GHOST", "NEONS", "CYBER", "SPACE"];
-    const today = new Date().toISOString().slice(0, 10);
+const words = ["PLANE", "CRANE", "LIGHT", "BRAVE", "GHOST", "NEONS", "CYBER", "SPACE", "AGENT", "LASER", "STARS", "ROBOT"];
     
-    if (localStorage.getItem("dailyDate") === today) {
-        secretWord = localStorage.getItem("dailyWord");
-    } else {
-        secretWord = words[Math.floor(Math.random() * words.length)];
-        localStorage.setItem("dailyWord", secretWord);
-        localStorage.setItem("dailyDate", today);
+    // 1. NEW LOGIC: True Random Shuffle Function (Fisher-Yates Algorithm)
+    function shuffleAndPickWord() {
+        for (let i = words.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [words[i], words[j]] = [words[j], words[i]];
+        }
+        secretWord = words[0]; // Pick the first word after the array is shuffled
     }
 
+    // Set the initial word when the page first loads
+    shuffleAndPickWord();
+function resetBoardForNextRound() {
+        if (typeof playSfx === 'function') playSfx('clickSound');
+        
+        // Shuffle and grab a new secret word for the next round
+        shuffleAndPickWord();
+
+        // Reset Game State Variables
+        currentGuess = "";
+        attempts = 0;
+        submitBtn.disabled = false;
+
+        // Clear the UI History Log
+        historyBox.innerHTML = "";
+
+        // Clear the Tiles (Removes letters and classes like 'active' or 'hint-reveal')
+        tiles.forEach(tile => {
+            tile.innerText = "";
+            tile.className = "tile"; 
+        });
+        document.querySelectorAll('.key').forEach(key => {
+            key.classList.remove('correct', 'present', 'absent');
+        });
+
+        // Hide the Mission Success/Fail Modal
+        document.getElementById('win-modal').style.display = 'none';
+    }
     let score = parseInt(localStorage.getItem("score")) || 0;
 
     function handleGuess() {
@@ -244,7 +272,7 @@ function endGame(win, finalScore) {
     }
 
     submitBtn.addEventListener("click", handleGuess);
-    document.getElementById('win-close-btn').addEventListener('click', () => location.reload());
+    document.getElementById('win-close-btn').addEventListener('click', resetBoardForNextRound);
 }
 
 // --- Keyboard Interaction ---

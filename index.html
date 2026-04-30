@@ -8,86 +8,126 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Particle Background -->
     <canvas id="particles"></canvas>
 
+    <!-- MAIN MENU CONTAINER -->
     <div class="main-menu" id="main-menu">
-        <h1 class="game-title">GUESS<br>MY THOUGHT</h1>
         
-        <div id="player-profile" class="profile-box" style="display: none;">
-            <p id="display-name">WELCOME BACK!</p>
-            <p id="credit-score">CREDITS: 0</p>
-        </div>
-
-<div class="menu-buttons">
-    <button class="start-game-btn" id="start-game-btn">START GAME</button>
-    <button class="glow-btn" id="settings-btn" style="font-size: 14px; margin-top: 10px;">SETTINGS</button>
-    <button class="help-btn-home" id="help-btn-home">HOW TO PLAY</button>
-    <button class="exit-btn" id="exit-btn" style="display: none;">LOGOUT</button>
-</div>
-
-<div id="settings-modal" class="modal-overlay">
-    <div class="modal-box neon-border">
-        <h2>SYSTEM SETTINGS</h2>
+        <!-- Upgraded Game Title -->
+        <h1 class="game-title gradient-text">GUESS<br>MY THOUGHT</h1>
         
-        <div class="setting-row">
-            <p>VISUAL THEME</p>
-            <button id="theme-toggle-btn" class="glow-btn" style="font-size: 12px; width: 140px;">DARK MODE</button>
+        <!-- Upgraded Profile/Score Board (Agent Card) -->
+        <div id="player-profile" class="agent-card" style="display: none;">
+         
+            <div class="agent-details">
+                <div class="agent-info">
+                    <span class="agent-label">OPERATIVE</span>
+                    <strong id="display-name" class="agent-name">UNKNOWN</strong>
+                </div>
+                <div class="agent-divider"></div>
+                <div class="agent-stats">
+                    <span class="agent-label">FUNDS</span>
+                    <strong id="credit-score" class="agent-credits">0</strong>
+                </div>
+            </div>
         </div>
 
-       
-        <div class="setting-row">
-            <p>BGM MUSIC</p>
-            <button id="music-toggle-btn" class="glow-btn" style="font-size: 12px; width: 140px; border-color: #ff00ff; color: #ff00ff;">OFF</button>
-        </div>
-
-
-        <div class="setting-row">
-            <p>VOLUME</p>
-            <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5">
-        </div>
-
-        <button id="close-settings" class="confirm-btn" style="margin-top: 20px;">SAVE & EXIT</button>
-    </div>
-</div>
-    </div>
-
-    <div id="help-modal" class="modal-overlay">
-        <div class="modal-box neon-border">
-            <span id="close-help" class="close-btn">&times;</span>
-            <h2>HOW TO PLAY</h2>
-            <ul class="help-list">
-                <li>Guess the <strong>NEON WORD</strong> in 6 tries.</li>
-                <li>Each guess must be 5 letters.</li>
-                <li><strong>Pos:</strong> Letters in the correct spot.</li>
-                <li><strong>Letter:</strong> Correct letters in the wrong spot.</li>
-            </ul>
-            <button id="got-it-btn" class="confirm-btn">GOT IT!</button>
+        <!-- Main Buttons -->
+        <div class="menu-buttons">
+            <button class="start-game-btn" id="start-game-btn">START MISSION</button>
+            <button class="glow-btn" id="settings-btn" style="font-size: 14px; margin-top: 10px;">SYSTEM SETTINGS</button>
+            <button class="help-btn-home" id="help-btn-home">HOW TO PLAY</button>
+            <button class="exit-btn" id="exit-btn" style="display: none;">ABORT MISSION</button>
         </div>
     </div>
 
-    <div id="name-modal" class="modal">
-        <div class="modal-content">
-            <h2>ENTER PLAYER NAME</h2>
-            <input type="text" id="player-name" placeholder="Your Name">
-            <button id="confirm-btn" class="confirm-btn">START</button>
-        </div>
-    </div>
+    <!-- UPGRADED SETTINGS MODAL -->
+    <div id="settings-modal" class="modal-overlay">
+        <div class="modal-box premium-modal">
+            <span id="close-settings" class="premium-close-btn">&times;</span>
+            <h2 class="modal-title">SYSTEM PREFS</h2>
+            <p class="modal-subtitle">Configure your terminal</p>
+            
+            <div class="settings-container">
+                <div class="setting-row premium-setting">
+                    <span class="setting-label">VISUAL THEME</span>
+                    <button id="theme-toggle-btn" class="glow-btn setting-toggle">DARK</button>
+                </div>
+               
+                <div class="setting-row premium-setting">
+                    <span class="setting-label">BACKGROUND AUDIO</span>
+                    <button id="music-toggle-btn" class="glow-btn setting-toggle" style="border-color: #ff00ff; color: #ff00ff;">OFF</button>
+                </div>
 
-    <div id="exit-modal" class="modal-overlay">
-        <div class="modal-box neon-border-red">
-            <h2>LOGOUT?</h2>
-            <p style="margin-bottom: 20px;">Are you sure you want to exit and clear your session?</p>
-            <div class="modal-buttons">
-                <button id="cancel-exit" class="confirm-btn">CANCEL</button>
-                <button id="confirm-exit" class="exit-btn-final">LOGOUT</button>
+                <div class="setting-row premium-setting" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                    <span class="setting-label">MASTER VOLUME</span>
+                    <input type="range" id="volume-slider" class="premium-slider" min="0" max="1" step="0.1" value="0.5">
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- UPGRADED HELP MODAL -->
+    <div id="help-modal" class="modal-overlay">
+        <div class="modal-box premium-modal">
+            <span id="close-help" class="premium-close-btn">&times;</span>
+            <h2 class="modal-title">HOW TO PLAY</h2>
+            <p class="modal-subtitle">Decode the <strong>NEON WORD</strong> in 6 attempts.</p>
+            
+            <div class="tutorial-container">
+                <div class="tutorial-example">
+                    <div class="tutorial-row">
+                        <div class="mini-tile correct-demo">P</div>
+                        <div class="mini-tile">L</div><div class="mini-tile">A</div><div class="mini-tile">N</div><div class="mini-tile">E</div>
+                    </div>
+                    <p class="tutorial-text"><span class="highlight-green">POS:</span> The letter <strong>P</strong> is in the correct spot.</p>
+                </div>
+                <div class="tutorial-example">
+                    <div class="tutorial-row">
+                        <div class="mini-tile">G</div><div class="mini-tile">H</div>
+                        <div class="mini-tile present-demo">O</div>
+                        <div class="mini-tile">S</div><div class="mini-tile">T</div>
+                    </div>
+                    <p class="tutorial-text"><span class="highlight-yellow">LETTER:</span> The letter <strong>O</strong> is in the word but wrong spot.</p>
+                </div>
+            </div>
+            <button id="got-it-btn" class="glow-btn full-width-btn">GOT IT</button>
+        </div>
+    </div>
+
+    <!-- NAME INPUT MODAL (Upgraded to premium theme) -->
+    <div id="name-modal" class="modal-overlay">
+        <div class="modal-box premium-modal">
+            <h2 class="modal-title">AGENT LOGIN</h2>
+            <p class="modal-subtitle">Enter your operative alias to proceed.</p>
+            
+            <!-- Clean, centered input field -->
+            <input type="text" id="player-name" placeholder="ENTER ALIAS..." style="width: 100%; padding: 15px; margin: 20px 0; background: rgba(0, 0, 0, 0.5); border: 1px solid #00f0ff; color: #00f0ff; text-align: center; border-radius: 8px; outline: none; font-size: 16px; text-transform: uppercase; letter-spacing: 2px;">
+            
+            <button id="confirm-btn" class="glow-btn full-width-btn">AUTHENTICATE</button>
+        </div>
+    </div>
+
+    <!-- EXIT/LOGOUT MODAL (Upgraded to premium theme) -->
+    <div id="exit-modal" class="modal-overlay">
+        <div class="modal-box premium-modal" style="border-color: #ff4444; box-shadow: 0 10px 40px rgba(255, 68, 68, 0.2);">
+            <h2 class="modal-title" style="color: #ff4444;">ABORT MISSION?</h2>
+            <p class="modal-subtitle" style="margin-bottom: 25px;">Are you sure you want to clear your local session data?</p>
+            
+            <div style="display: flex; gap: 15px;">
+                <button id="cancel-exit" class="glow-btn" style="flex: 1;">CANCEL</button>
+                <button id="confirm-exit" class="danger-glow-btn" style="flex: 1; margin-top: 0;">LOGOUT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUDIO AND LOADING -->
     <audio id="bgSound" src="bg_sound.mp3" loop></audio>
+    
     <div id="loading-screen" class="loading" style="display: none;">
         <div class="loader"></div>
-        <p>Loading Game...</p>
+        <p style="letter-spacing: 2px; text-transform: uppercase;">Encrypting Connection...</p>
     </div>
 
     <script src="script.js"></script>
