@@ -28,14 +28,24 @@
 <div id="settings-modal" class="modal-overlay">
     <div class="modal-box neon-border">
         <h2>SYSTEM SETTINGS</h2>
+        
         <div class="setting-row">
             <p>VISUAL THEME</p>
             <button id="theme-toggle-btn" class="glow-btn" style="font-size: 12px; width: 140px;">DARK MODE</button>
         </div>
+
+       
         <div class="setting-row">
-            <p>SOUND VOLUME</p>
+            <p>BGM MUSIC</p>
+            <button id="music-toggle-btn" class="glow-btn" style="font-size: 12px; width: 140px; border-color: #ff00ff; color: #ff00ff;">OFF</button>
+        </div>
+
+
+        <div class="setting-row">
+            <p>VOLUME</p>
             <input type="range" id="volume-slider" min="0" max="1" step="0.1" value="0.5">
         </div>
+
         <button id="close-settings" class="confirm-btn" style="margin-top: 20px;">SAVE & EXIT</button>
     </div>
 </div>
@@ -74,6 +84,7 @@
         </div>
     </div>
 
+    <audio id="bgMusic" src="bg_sound.mp3" loop></audio>
     <div id="loading-screen" class="loading" style="display: none;">
         <div class="loader"></div>
         <p>Loading Game...</p>

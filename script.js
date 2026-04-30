@@ -7,7 +7,7 @@ const creditScore = document.getElementById('credit-score');
 const mainMenu = document.getElementById('main-menu');
 const backHomeBtn = document.getElementById('back-to-home');
 const welcomeText = document.getElementById('welcome-text');
-
+    const loadingScreen = document.getElementById('loading-screen');
 // Modals
 const exitModal = document.getElementById('exit-modal');
 const helpModal = document.getElementById('help-modal');
@@ -42,7 +42,7 @@ if (startGameBtn) {
     const nameModal = document.getElementById('name-modal');
     const confirmBtn = document.getElementById('confirm-btn');
     const playerNameInput = document.getElementById('player-name');
-    const loadingScreen = document.getElementById('loading-screen');
+
 
     startGameBtn.addEventListener('click', () => {
         if (localStorage.getItem('playerName')) {
@@ -69,8 +69,15 @@ if (startGameBtn) {
 }
 
 if (backHomeBtn) {
+    console.log(true)
     backHomeBtn.addEventListener('click', () => {
-        window.location.href = "index.html"; // Returns to home page
+        playSfx('clickSound'); 
+        if (loadingScreen) {
+            loadingScreen.style.display = "flex";
+        }
+        setTimeout(() => { 
+            window.location.href = "index.html"; 
+        }, 1500);
     });
 }
 
@@ -84,12 +91,24 @@ const openHelp = () => { if (helpModal) helpModal.style.display = 'flex'; };
 const hideHelp = () => { if (helpModal) helpModal.style.display = 'none'; };
 
 if (helpBtnHome) helpBtnHome.addEventListener('click', openHelp);
-if (helpBtnGame) helpBtnGame.addEventListener('click', openHelp);
-if (closeHelp) closeHelp.addEventListener('click', hideHelp);
-if (gotItBtn) gotItBtn.addEventListener('click', hideHelp);
+if (helpBtnGame){
+    helpBtnGame.addEventListener('click',()=>{
+        playSfx('clickSound'); 
+        openHelp();
+    } );
+} 
+if (closeHelp) {closeHelp.addEventListener('click', ()=>{
+    playSfx('clickSound'); 
+    hideHelp();
+})};
+if (gotItBtn) {gotItBtn.addEventListener('click', ()=>{
+    playSfx('clickSound'); 
+    hideHelp();
+})};
 
 // --- Logout Logic ---
 if (exitBtn) {
+    playSfx('clickSound');
     exitBtn.addEventListener('click', () => { exitModal.style.display = 'flex'; });
     document.getElementById('cancel-exit').addEventListener('click', () => { exitModal.style.display = 'none'; });
     document.getElementById('confirm-exit').addEventListener('click', () => {
@@ -124,6 +143,7 @@ if (submitBtn) {
     let score = parseInt(localStorage.getItem("score")) || 0;
 
     function handleGuess() {
+        playSfx('clickSound');
         if (submitBtn.disabled || currentGuess.length !== 5) return;
 
         attempts++;
@@ -160,24 +180,34 @@ if (submitBtn) {
         return { pos, let: letCount };
     }
 
-    function endGame(win, finalScore) {
-        submitBtn.disabled = true;
-        const winModal = document.getElementById('win-modal');
-        const winTitle = document.getElementById('win-title');
-        const winMsg = document.getElementById('win-message');
-        const finalScoreText = document.getElementById('final-score-display');
-        
-        // Refresh the score from localStorage one last time to be safe
-        const verifiedScore = localStorage.getItem("score") || 0;
-
-        winModal.style.display = 'flex';
-        winTitle.innerText = win ? "MISSION SUCCESS!" : "MISSION FAILED";
-        winTitle.style.color = win ? "#00ff44" : "#ff4444";
-        winMsg.innerText = win ? `You decoded: ${secretWord}` : `Target was: ${secretWord}`;
-        
-        // FIX: This line now uses the verified score from storage
-        finalScoreText.innerText = `TOTAL CREDITS: ${verifiedScore}`;
+function endGame(win, finalScore) {
+    submitBtn.disabled = true;
+    const winModal = document.getElementById('win-modal');
+    const winTitle = document.getElementById('win-title');
+    const winMsg = document.getElementById('win-message');
+    const finalScoreText = document.getElementById('final-score-display');
+    
+    // Play the win sound if the mission is successful
+    if (win) {
+        playSfx('winSound');
     }
+
+    // Refresh the score from localStorage one last time to be safe
+    const verifiedScore = localStorage.getItem("score") || 0;
+
+    winModal.style.display = 'flex';
+    winTitle.innerText = win ? "MISSION SUCCESS!" : "MISSION FAILED";
+    winTitle.style.color = win ? "#00ff44" : "#ff4444";
+    winMsg.innerText = win ? `You decoded: ${secretWord}` : `Target was: ${secretWord}`;
+    
+    // FIX: This line now uses the verified score from storage
+    finalScoreText.innerText = `TOTAL CREDITS: ${verifiedScore}`;
+    
+    // Optional: Refresh the sidebar leaderboard to show the latest score
+    if (typeof updateLeaderboard === "function") {
+        updateLeaderboard();
+    }
+}
 
     function updateTiles() {
         tiles.forEach((tile, i) => {
@@ -209,6 +239,7 @@ if (submitBtn) {
 // --- Keyboard Interaction ---
 const keyboard = document.getElementById("keyboard");
 if (keyboard) {
+    playSfx('clickSound');
     const rows = [document.getElementById("row1"), document.getElementById("row2"), document.getElementById("row3")];
     const layout = ["QWERTYUIOP".split(""), "ASDFGHJKL".split(""), ["ENTER", ..."ZXCVBNM".split(""), "⌫"]];
 
@@ -311,9 +342,11 @@ document.getElementById('close-settings')?.addEventListener('click', () => {
 document.getElementById('volume-slider')?.addEventListener('input', (e) => {
     const vol = e.target.value;
     localStorage.setItem('gameVolume', vol);
-    // Apply to audio elements
-    const sounds = [document.getElementById('clickSound'), document.getElementById('winSound')];
-    sounds.forEach(s => { if(s) s.volume = vol; });
+   const clickSound = document.getElementById('clickSound');
+    if (clickSound) {
+        clickSound.volume = vol;
+        clickSound.play(); 
+    }
 });
 function updateWinStats() {
     let currentScore = parseInt(localStorage.getItem('score')) || 0;
@@ -369,9 +402,7 @@ if (hintBtn) {
             // 4. Update the current guess string
             currentGuess += revealedLetter;
             
-            // Optional: play sound
-            const clickSound = document.getElementById('clickSound');
-            if (clickSound) clickSound.play();
+            playSfx('clickSound');
         }
     });
 }
@@ -413,6 +444,60 @@ function renderLeaderboard() {
         `;
         listContainer.appendChild(row);
     });
+}
+// --- Integrated Audio System ---
+function playSfx(soundId) {
+    const sound = document.getElementById(soundId);
+    if (sound) {
+        // Fetch volume from settings slider (default to 0.5)
+        const savedVol = localStorage.getItem('gameVolume') || 0.5;
+        sound.volume = savedVol;
+        
+        sound.currentTime = 0; // Reset to start for rapid clicks
+        sound.play().catch(e => console.log("Audio play blocked by browser"));
+    }
+}
+const musicToggleBtn = document.getElementById('music-toggle-btn');
+const bgMusic = document.getElementById('bgMusic');
+
+function updateMusicUI() {
+    const isMusicOn = localStorage.getItem('musicEnabled') === 'true';
+    if (musicToggleBtn) {
+        musicToggleBtn.innerText = isMusicOn ? "ON" : "OFF";
+        musicToggleBtn.style.boxShadow = isMusicOn ? "0 0 15px #ff00ff" : "none";
+    }
+    
+    if (bgMusic) {
+        if (isMusicOn) {
+            startBgMusic(); 
+        } else {
+            bgMusic.pause();
+        }
+    }
+}
+
+// Event Listener for the Toggle Button
+musicToggleBtn?.addEventListener('click', () => {
+    playSfx('clickSound'); // Play feedback sound
+    const currentState = localStorage.getItem('musicEnabled') === 'true';
+    localStorage.setItem('musicEnabled', !currentState);
+    updateMusicUI();
+});
+
+
+function initSystems() {
+
+    updateMusicUI();
+}
+function startBgMusic() {
+    const music = document.getElementById('bgMusic');
+    const isEnabled = localStorage.getItem('musicEnabled') === 'true';
+    
+    if (music && isEnabled) {
+        const savedVol = localStorage.getItem('gameVolume') || 0.5;
+        music.volume = savedVol * 0.3; // Keep it subtle
+        music.play().catch(e => console.log("Waiting for interaction..."));
+    }
 }
 // Call init on load
 window.onload = initSystems;

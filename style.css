@@ -68,7 +68,41 @@ body.light-mode .glow-btn {
     color: white !important;
     border: none !important;
 }
+body.light-mode .back-home-btn {
+    background: rgba(255, 255, 255, 0.7) !important;
+    border: 1px solid #cbd5e0 !important;
+    color: #4a5568 !important; /* Soft dark grey for the arrow */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+}
 
+body.light-mode .back-home-btn:hover {
+    background: #ffffff !important;
+    color: #00d9ff !important; /* Neon blue highlight on hover */
+    border-color: #00d9ff !important;
+    box-shadow: 0 4px 15px rgba(0, 217, 255, 0.2) !important;
+}
+body.light-mode .icon-btn,
+body.light-mode .help-btn {
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #1a202c !important; /* Darker text for readability */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Specific hover state for the Trophy (Icon) button */
+body.light-mode .icon-btn:hover {
+    background: #fffaf0 !important; /* Slight gold tint */
+    border-color: #ecc94b !important;
+    box-shadow: 0 4px 15px rgba(236, 201, 75, 0.3) !important;
+}
+
+/* Specific hover state for the Help (?) button */
+body.light-mode .help-btn:hover {
+    background: #fff5f7 !important; /* Slight pink tint */
+    border-color: #ff00ff !important;
+    color: #ff00ff !important;
+    box-shadow: 0 4px 15px rgba(255, 0, 255, 0.2) !important;
+}
 body.light-mode .glow-btn:hover {
     background: #0088ff;
     color: #ffffff;
