@@ -83,7 +83,7 @@ body {
 
 .key.large { min-width: 80px; }
 .key:hover { background: #00f0ff; color: black; box-shadow: 0 0 15px #00f0ff; }
-.key:active { transform: scale(0.9); transition: transform 0.05s; }
+.key:active { transform: scale(0.92) translate(2px); transition: transform 0.05s; }
 
 .key.correct { background: #00ff44 !important; color: black; }
 .key.present { background: #ffff00 !important; color: black; }
@@ -294,4 +294,370 @@ body.light-mode .modal-box p, body.light-mode .modal-box li { color: #4a5568; }
     .game-title { font-size: 32px; }
     .tile { width: 42px; height: 42px; font-size: 20px; }
     .key { padding: 10px 6px; font-size: 11px; margin: 1px; }
+}
+/* =========================================
+   HISTORY LOG UI UPGRADE
+========================================= */
+#history {
+    max-width: 350px;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 240, 255, 0.05);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    padding: 12px 15px;
+    border-radius: 8px;
+    animation: slide-up 0.3s ease-out;
+}
+
+.history-word {
+    font-size: 18px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    color: #ffffff;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
+
+.history-stats {
+    display: flex;
+    gap: 8px;
+}
+
+.stat-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+/* Dark Mode Badges */
+.pos-badge {
+    background: rgba(0, 255, 68, 0.1);
+    color: #00ff44;
+    border: 1px solid #00ff44;
+    box-shadow: 0 0 10px rgba(0, 255, 68, 0.2);
+}
+
+.let-badge {
+    background: rgba(255, 255, 0, 0.1);
+    color: #ffff00;
+    border: 1px solid #ffff00;
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.2);
+}
+
+@keyframes slide-up {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- LIGHT MODE OVERRIDES --- */
+body.light-mode .history-item {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+}
+
+body.light-mode .history-word {
+    color: #2d3748;
+    text-shadow: none;
+}
+
+body.light-mode .pos-badge {
+    background: #f0fff4; /* Soft green */
+    color: #38a169;
+    border: 1px solid #9ae6b4;
+    box-shadow: none;
+}
+
+body.light-mode .let-badge {
+    background: #fffff0; /* Soft yellow */
+    color: #d69e2e;
+    border: 1px solid #f6e05e;
+    box-shadow: none;
+}
+/* =========================================
+   FLOATING STATS HUD (BEST & STREAK)
+========================================= */
+.top-left-stats {
+    position: fixed;
+    top: 20px;
+    left: 80px; /* Places it neatly beside the back button */
+    display: flex;
+    gap: 15px;
+    z-index: 1000;
+}
+
+.stat-pill {
+    display: flex;
+    align-items: center;
+    background: rgba(10, 10, 10, 0.7);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    border-radius: 30px;
+    padding: 5px 15px 5px 5px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: default;
+}
+
+.stat-pill:hover {
+    transform: translateY(-3px);
+}
+
+.best-pill:hover { border-color: #00f0ff; box-shadow: 0 0 15px rgba(0, 240, 255, 0.4); }
+.streak-pill:hover { border-color: #ff00ff; box-shadow: 0 0 15px rgba(255, 0, 255, 0.4); }
+
+.streak-pill {
+    border-color: rgba(255, 0, 255, 0.3);
+}
+
+.stat-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.best-pill .stat-icon { background: rgba(0, 240, 255, 0.1); }
+.streak-pill .stat-icon { background: rgba(255, 0, 255, 0.1); }
+
+.stat-label {
+    font-size: 10px;
+    color: #a0aec0;
+    letter-spacing: 1px;
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+.stat-value {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Neon Text */
+.best-pill .stat-value { color: #00f0ff; text-shadow: 0 0 8px #00f0ff; }
+.streak-pill .stat-value { color: #ff00ff; text-shadow: 0 0 8px #ff00ff; }
+
+/* --- LIGHT MODE OVERRIDES --- */
+body.light-mode .stat-pill {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+body.light-mode .best-pill:hover,
+body.light-mode .streak-pill:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .stat-icon { background: #f7fafc; }
+body.light-mode .stat-label { color: #718096; }
+
+/* Flat bold text instead of neon glow */
+body.light-mode .best-pill .stat-value { color: #3182ce; text-shadow: none; }
+body.light-mode .streak-pill .stat-value { color: #d53f8c; text-shadow: none; }
+
+/* --- MOBILE RESPONSIVE FIX --- */
+@media screen and (max-width: 768px) {
+    .top-left-stats {
+        left: 60px; /* Adjust space based on smaller mobile back button */
+        top: 15px;
+        gap: 8px;
+    }
+    
+    .stat-pill {
+        padding: 4px 12px 4px 4px;
+    }
+    
+    .stat-icon {
+        width: 26px;
+        height: 26px;
+        font-size: 13px;
+        margin-right: 6px;
+    }
+    
+    /* Hide the text labels ("BEST", "STREAK") on phones to save space */
+    .stat-label {
+        display: none;
+    }
+    
+    .stat-value {
+        font-size: 14px;
+    }
+}
+.start-game-btn:hover,
+.glow-btn:hover,
+.danger-glow-btn:hover,
+.exit-btn:hover,
+.help-btn-home:hover,
+.icon-btn:hover,
+.help-btn:hover,
+.back-home-btn:hover,
+.confirm-btn:hover,
+.exit-btn-final:hover,
+#theme-toggle-btn:hover,
+#music-toggle-btn:hover {
+    transform: translateY(-4px);
+}
+/* =========================================
+   PREMIUM HELP MODAL UI
+========================================= */
+.premium-modal {
+    position: relative;
+    padding: 40px 30px;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 240, 255, 0.4);
+    box-shadow: 0 10px 40px rgba(0, 240, 255, 0.2);
+    border-radius: 16px;
+}
+
+.premium-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    color: #a0aec0;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.premium-close-btn:hover {
+    color: #ff4444;
+    transform: scale(1.1) rotate(90deg);
+}
+
+.modal-title {
+    font-size: 24px;
+    letter-spacing: 3px;
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.modal-subtitle {
+    font-size: 14px;
+    color: #a0aec0;
+    margin-bottom: 25px;
+}
+
+/* Tutorial Visuals */
+.tutorial-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.tutorial-example {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.tutorial-row {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+
+.mini-tile {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #333;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.mini-tile.correct-demo { background: #00ff44; color: #000; border-color: #00ff44; box-shadow: 0 0 10px rgba(0, 255, 68, 0.4); }
+.mini-tile.present-demo { background: #ffff00; color: #000; border-color: #ffff00; box-shadow: 0 0 10px rgba(255, 255, 0, 0.4); }
+
+.tutorial-text {
+    font-size: 13px;
+    color: #cbd5e0;
+    line-height: 1.5;
+}
+
+.highlight-green { color: #00ff44; font-weight: bold; }
+.highlight-yellow { color: #ffff00; font-weight: bold; }
+
+.full-width-btn {
+    width: 100%;
+    margin-top: 10px;
+}
+
+/* --- LIGHT MODE OVERRIDES --- */
+body.light-mode .premium-modal {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .modal-title { color: #1a202c; }
+body.light-mode .modal-subtitle { color: #718096; }
+
+body.light-mode .tutorial-example {
+    background: #f7fafc;
+    border: 1px solid #edf2f7;
+}
+
+body.light-mode .mini-tile {
+    background: #ffffff;
+    border-color: #cbd5e0;
+    color: #4a5568;
+}
+
+body.light-mode .mini-tile.correct-demo { background: #48bb78; color: white; border-color: #48bb78; box-shadow: none; }
+body.light-mode .mini-tile.present-demo { background: #ecc94b; color: white; border-color: #ecc94b; box-shadow: none; }
+
+body.light-mode .tutorial-text { color: #4a5568; }
+body.light-mode .highlight-green { color: #38a169; }
+body.light-mode .highlight-yellow { color: #d69e2e; }
+body.light-mode .premium-close-btn { color: #a0aec0; }
+body.light-mode .premium-close-btn:hover { color: #e53e3e; }
+
+/* Modal Button Grouping */
+.modal-btn-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.modal-btn-group button {
+    flex: 1; /* Makes both buttons equal width */
+    margin-top: 0; /* Overrides the default margin on danger-btn */
+}
+
+/* Disabled State for Confirm Button */
+.glow-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+    border-color: #555;
+    color: #555;
+}
+
+body.light-mode .glow-btn:disabled {
+    background: #cbd5e0 !important;
+    color: #a0aec0 !important;
 }

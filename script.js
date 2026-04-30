@@ -150,10 +150,20 @@ if (submitBtn) {
         updateKeyboardUI(currentGuess);
 
         const result = checkMatch(currentGuess);       
+
         const attemptLine = document.createElement("div");
         attemptLine.classList.add("history-item");
-        attemptLine.innerText = `${currentGuess} → ${result.pos} Pos | ${result.let} Letter`;
-        historyBox.appendChild(attemptLine);
+
+        // NEW: Structured UI for the history log with stat badges
+        attemptLine.innerHTML = `
+            <span class="history-word">${currentGuess}</span>
+            <div class="history-stats">
+                <span class="stat-badge pos-badge">${result.pos} POS</span>
+                <span class="stat-badge let-badge">${result.let} LET</span>
+            </div>
+        `;
+
+historyBox.appendChild(attemptLine);
 
         if (result.pos === 5) {
                 // 1. Get fresh score, add reward, and save
@@ -361,17 +371,56 @@ function updateWinStats() {
     localStorage.setItem('winStreak', streak);
     initSystems(); // Refresh UI
 }
+// --- Hint System Logic ---
 const hintBtn = document.getElementById('hint-btn');
+const hintModal = document.getElementById('hint-modal');
+const closeHintBtn = document.getElementById('close-hint');
+const cancelHintBtn = document.getElementById('cancel-hint-btn');
+const confirmHintBtn = document.getElementById('confirm-hint-btn');
+const hintFundsVal = document.getElementById('hint-funds-val');
 
+// 1. Open the Modal
 if (hintBtn) {
     hintBtn.addEventListener('click', () => {
-        // Always pull the freshest score from storage
+        if (typeof playSfx === 'function') playSfx('clickSound');
+        
+        // Fetch current score
+        let score = parseInt(localStorage.getItem('score')) || 0;
+        
+        // Update the modal text
+        if (hintFundsVal) {
+            hintFundsVal.innerText = score;
+            // Turn text red if they can't afford it, green if they can
+            hintFundsVal.style.color = score >= 20 ? "#00ff44" : "#ff4444";
+            hintFundsVal.style.textShadow = score >= 20 ? "0 0 10px #00ff44" : "0 0 10px #ff4444";
+        }
+        
+        // Disable the confirm button if they are broke
+        if (confirmHintBtn) {
+            confirmHintBtn.disabled = score < 20;
+            if(score < 20) {
+                confirmHintBtn.innerText = "INSUFFICIENT FUNDS";
+            } else {
+                confirmHintBtn.innerText = "CONFIRM";
+            }
+        }
+
+        if (hintModal) hintModal.style.display = 'flex';
+    });
+}
+
+// 2. Close Modal Handlers
+const hideHintModal = () => { if (hintModal) hintModal.style.display = 'none'; };
+if (closeHintBtn) closeHintBtn.addEventListener('click', () => { playSfx('clickSound'); hideHintModal(); });
+if (cancelHintBtn) cancelHintBtn.addEventListener('click', () => { playSfx('clickSound'); hideHintModal(); });
+
+// 3. Execute the Hint (Only when CONFIRM is clicked)
+if (confirmHintBtn) {
+    confirmHintBtn.addEventListener('click', () => {
         let score = parseInt(localStorage.getItem('score')) || 0;
 
-        if (score < 20) {
-            alert("NOT ENOUGH CREDITS!");
-            return;
-        }
+        // Security check: Don't allow if less than 20
+        if (score < 20) return; 
 
         // Identify the first empty tile
         let hintIndex = -1;
@@ -382,28 +431,28 @@ if (hintBtn) {
             }
         }
 
+        // If there is an empty tile available
         if (hintIndex !== -1) {
-            // 1. Deduct and Save
+            // Deduct and Save
             score -= 20;
             localStorage.setItem('score', score);
             
-            // 2. CRITICAL FIX: Update the UI display immediately
-            // This updates the 'CREDITS: X' text on the screen
-            const creditDisplay = document.getElementById('credit-score');
-            if (creditDisplay) {
-                creditDisplay.innerText = `CREDITS: ${score}`;
-            }
-
-            // 3. Reveal the letter
+            // Reveal the letter
             const revealedLetter = secretWord[hintIndex];
             const targetTile = tiles[hintIndex];
             targetTile.innerText = revealedLetter;
             targetTile.classList.add('hint-reveal');
             
-            // 4. Update the current guess string
+            // Update the current guess string
             currentGuess += revealedLetter;
             
-            playSfx('clickSound');
+            // Play a success sound and close modal
+            if (typeof playSfx === 'function') playSfx('clickSound'); 
+            hideHintModal();
+        } else {
+            // Board is already full of letters for this attempt
+            alert("Clear some letters first to use a hint!");
+            hideHintModal();
         }
     });
 }
