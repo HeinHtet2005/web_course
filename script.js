@@ -36,6 +36,7 @@ function init() {
     }
 }
 init();
+
 // --- Navigation & Game Initialization ---
 if (startGameBtn) {
     const nameModal = document.getElementById('name-modal');
@@ -72,6 +73,7 @@ if (backHomeBtn) {
         window.location.href = "index.html"; // Returns to home page
     });
 }
+
 // --- Instructions / How to Play Logic ---
 const helpBtnHome = document.getElementById('help-btn-home');
 const helpBtnGame = document.getElementById('help-btn');
@@ -203,6 +205,7 @@ if (submitBtn) {
     submitBtn.addEventListener("click", handleGuess);
     document.getElementById('win-close-btn').addEventListener('click', () => location.reload());
 }
+
 // --- Keyboard Interaction ---
 const keyboard = document.getElementById("keyboard");
 if (keyboard) {
