@@ -256,7 +256,7 @@ if (keyboard) {
 }
 
 function handleInput(key) {
-    playSfx('typeSound');
+    playSfx('keyboardSound'); // Corrected ID
     if (key === "ENTER") handleGuess();
     else if (key === "⌫" || key === "BACKSPACE") currentGuess = currentGuess.slice(0, -1);
     else if (currentGuess.length < 5 && /^[A-Z]$/.test(key)) currentGuess += key;
@@ -450,12 +450,10 @@ function renderLeaderboard() {
 function playSfx(soundId) {
     const sound = document.getElementById(soundId);
     if (sound) {
-        // Fetch volume from settings slider (default to 0.5)
         const savedVol = localStorage.getItem('gameVolume') || 0.5;
         sound.volume = savedVol;
-        
-        sound.currentTime = 0; // Reset to start for rapid clicks
-        sound.play().catch(e => console.log("Audio play blocked by browser"));
+        sound.currentTime = 0; 
+        sound.play().catch(e => console.log("Audio play blocked"));
     }
 }
 const musicToggleBtn = document.getElementById('music-toggle-btn');
@@ -487,17 +485,24 @@ musicToggleBtn?.addEventListener('click', () => {
 
 
 function initSystems() {
-
-    updateMusicUI();
+    applyTheme();
+    startBgMusic(); 
+    
+    const highScore = localStorage.getItem('highScore') || 0;
+    const streak = localStorage.getItem('winStreak') || 0;
+    if (document.getElementById('high-score-val')) {
+        document.getElementById('high-score-val').innerText = highScore;
+        document.getElementById('streak-val').innerText = streak;
+    }
 }
 function startBgMusic() {
-    const music = document.getElementById('bgMusic');
+    const music = document.getElementById('bgSound'); 
     const isEnabled = localStorage.getItem('musicEnabled') === 'true';
     
     if (music && isEnabled) {
         const savedVol = localStorage.getItem('gameVolume') || 0.5;
-        music.volume = savedVol * 0.3; // Keep it subtle
-        music.play().catch(e => console.log("Waiting for interaction..."));
+        music.volume = savedVol * 0.3; 
+        music.play().catch(e => console.log("Waiting for user interaction to play music..."));
     }
 }
 // Call init on load
