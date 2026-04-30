@@ -260,3 +260,70 @@ if (resetBtn) {
         location.reload();
     });
 }
+// --- NEW: Theme & Sound Systems ---
+function initSystems() {
+    // 1. Theme Logic
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    applyTheme(savedTheme);
+
+    // 2. Scoreboard Logic
+    const highScore = localStorage.getItem('highScore') || 0;
+    const streak = localStorage.getItem('winStreak') || 0;
+    if (document.getElementById('high-score-val')) {
+        document.getElementById('high-score-val').innerText = highScore;
+        document.getElementById('streak-val').innerText = streak;
+    }
+}
+
+function applyTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const body = document.body;
+    const themeBtn = document.getElementById('theme-toggle-btn');
+
+    if (savedTheme === 'light') {
+        body.classList.add('light-mode');
+        if (themeBtn) themeBtn.innerText = "LIGHT MODE";
+    } else {
+        body.classList.remove('light-mode');
+        if (themeBtn) themeBtn.innerText = "DARK MODE";
+    }
+}
+applyTheme();
+const settingsBtn = document.getElementById('theme-toggle-btn');
+if (settingsBtn) {
+    settingsBtn.addEventListener('click', () => {
+        const currentTheme = localStorage.getItem('theme') === 'light' ? 'dark' : 'light';
+        localStorage.setItem('theme', currentTheme);
+        applyTheme();
+    });
+}
+// Settings Event Listeners
+document.getElementById('settings-btn')?.addEventListener('click', () => {
+    document.getElementById('settings-modal').style.display = 'flex';
+});
+
+document.getElementById('close-settings')?.addEventListener('click', () => {
+    document.getElementById('settings-modal').style.display = 'none';
+});
+
+
+
+document.getElementById('volume-slider')?.addEventListener('input', (e) => {
+    const vol = e.target.value;
+    localStorage.setItem('gameVolume', vol);
+    // Apply to audio elements
+    const sounds = [document.getElementById('clickSound'), document.getElementById('winSound')];
+    sounds.forEach(s => { if(s) s.volume = vol; });
+});
+function updateWinStats() {
+    let currentScore = parseInt(localStorage.getItem('score')) || 0;
+    let highScore = parseInt(localStorage.getItem('highScore')) || 0;
+    let streak = parseInt(localStorage.getItem('winStreak')) || 0;
+
+    streak++;
+    if (currentScore > highScore) {
+        localStorage.setItem('highScore', currentScore);
+    }
+    localStorage.setItem('winStreak', streak);
+    initSystems(); // Refresh UI
+}
