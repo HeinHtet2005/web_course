@@ -203,3 +203,29 @@ if (submitBtn) {
     submitBtn.addEventListener("click", handleGuess);
     document.getElementById('win-close-btn').addEventListener('click', () => location.reload());
 }
+// --- Keyboard Interaction ---
+const keyboard = document.getElementById("keyboard");
+if (keyboard) {
+    const rows = [document.getElementById("row1"), document.getElementById("row2"), document.getElementById("row3")];
+    const layout = ["QWERTYUIOP".split(""), "ASDFGHJKL".split(""), ["ENTER", ..."ZXCVBNM".split(""), "⌫"]];
+
+    layout.forEach((keys, idx) => {
+        keys.forEach(k => {
+            const btn = document.createElement("div");
+            btn.className = `key ${k.length > 1 ? 'large' : ''}`;
+            btn.innerText = k;
+            btn.setAttribute("data-key", k);
+            btn.onclick = () => handleInput(k);
+            rows[idx].appendChild(btn);
+        });
+    });
+}
+
+function handleInput(key) {
+    if (key === "ENTER") handleGuess();
+    else if (key === "⌫" || key === "BACKSPACE") currentGuess = currentGuess.slice(0, -1);
+    else if (currentGuess.length < 5 && /^[A-Z]$/.test(key)) currentGuess += key;
+    if (typeof updateTiles === "function") updateTiles();
+}
+
+document.addEventListener("keydown", (e) => handleInput(e.key.toUpperCase()));
