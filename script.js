@@ -327,3 +327,92 @@ function updateWinStats() {
     localStorage.setItem('winStreak', streak);
     initSystems(); // Refresh UI
 }
+const hintBtn = document.getElementById('hint-btn');
+
+if (hintBtn) {
+    hintBtn.addEventListener('click', () => {
+        // Always pull the freshest score from storage
+        let score = parseInt(localStorage.getItem('score')) || 0;
+
+        if (score < 20) {
+            alert("NOT ENOUGH CREDITS!");
+            return;
+        }
+
+        // Identify the first empty tile
+        let hintIndex = -1;
+        for (let i = 0; i < 5; i++) {
+            if (!currentGuess[i]) {
+                hintIndex = i;
+                break;
+            }
+        }
+
+        if (hintIndex !== -1) {
+            // 1. Deduct and Save
+            score -= 20;
+            localStorage.setItem('score', score);
+            
+            // 2. CRITICAL FIX: Update the UI display immediately
+            // This updates the 'CREDITS: X' text on the screen
+            const creditDisplay = document.getElementById('credit-score');
+            if (creditDisplay) {
+                creditDisplay.innerText = `CREDITS: ${score}`;
+            }
+
+            // 3. Reveal the letter
+            const revealedLetter = secretWord[hintIndex];
+            const targetTile = tiles[hintIndex];
+            targetTile.innerText = revealedLetter;
+            targetTile.classList.add('hint-reveal');
+            
+            // 4. Update the current guess string
+            currentGuess += revealedLetter;
+            
+            // Optional: play sound
+            const clickSound = document.getElementById('clickSound');
+            if (clickSound) clickSound.play();
+        }
+    });
+}
+// Toggle Sidebar Logic
+const lbToggle = document.getElementById('leaderboard-toggle');
+const lbSidebar = document.getElementById('leaderboard-sidebar');
+const closeSidebar = document.getElementById('close-sidebar');
+
+lbToggle?.addEventListener('click', () => {
+    lbSidebar.classList.add('open');
+    renderLeaderboard(); // Refresh list when opened
+});
+
+closeSidebar?.addEventListener('click', () => {
+    lbSidebar.classList.remove('open');
+});
+
+function renderLeaderboard() {
+    const listContainer = document.getElementById('leaderboard-list-sidebar');
+    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
+    
+    listContainer.innerHTML = "";
+    leaderboard.forEach((entry, index) => {
+        const row = document.createElement('div');
+        row.className = 'leader-row';
+        
+        // Add medal emoji for top 3
+        let medal = "";
+        if(index === 0) medal = "🥇";
+        else if(index === 1) medal = "🥈";
+        else if(index === 2) medal = "🥉";
+
+        row.innerHTML = `
+            <div>
+                <span style="font-size: 12px; opacity: 0.7;">#${index+1}</span>
+                <span style="margin-left: 10px; font-weight: bold;">${entry.name.toUpperCase()}</span>
+            </div>
+            <div style="color: #00f0ff;">${medal} ${entry.score}</div>
+        `;
+        listContainer.appendChild(row);
+    });
+}
+// Call init on load
+window.onload = initSystems;
