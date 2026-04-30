@@ -450,7 +450,7 @@ function renderLeaderboard() {
 function playSfx(soundId) {
     const sound = document.getElementById(soundId);
     if (sound) {
-        const savedVol = localStorage.getItem('gameVolume') || 0.5;
+        const savedVol = localStorage.getItem('gameVolume') || 0.5; 
         sound.volume = savedVol;
         sound.currentTime = 0; 
         sound.play().catch(e => console.log("Audio play blocked"));
@@ -460,28 +460,43 @@ const musicToggleBtn = document.getElementById('music-toggle-btn');
 const bgMusic = document.getElementById('bgMusic');
 
 function updateMusicUI() {
+
     const isMusicOn = localStorage.getItem('musicEnabled') === 'true';
+
+
     if (musicToggleBtn) {
         musicToggleBtn.innerText = isMusicOn ? "ON" : "OFF";
-        musicToggleBtn.style.boxShadow = isMusicOn ? "0 0 15px #ff00ff" : "none";
+        musicToggleBtn.style.boxShadow = isMusicOn ? "0 0 15px #00f0ff" : "none";
+        musicToggleBtn.style.borderColor = isMusicOn ? "#00f0ff" : "#ff00ff";
+        musicToggleBtn.style.color = isMusicOn ? "#00f0ff" : "#ff00ff";
     }
-    
-    if (bgMusic) {
+
+
+    const bgAudio = document.getElementById('bgSound') || document.getElementById('bgMusic');
+
+
+    if (bgAudio) {
         if (isMusicOn) {
-            startBgMusic(); 
+            const savedVol = localStorage.getItem('gameVolume') || 0.5;
+            bgAudio.volume = savedVol * 0.3;
+            bgAudio.play().catch(e => console.log("Browser requires user interaction first."));
         } else {
-            bgMusic.pause();
+            bgAudio.pause();
         }
     }
 }
 
-// Event Listener for the Toggle Button
-musicToggleBtn?.addEventListener('click', () => {
-    playSfx('clickSound'); // Play feedback sound
-    const currentState = localStorage.getItem('musicEnabled') === 'true';
-    localStorage.setItem('musicEnabled', !currentState);
-    updateMusicUI();
-});
+
+if (musicToggleBtn) {
+    musicToggleBtn.addEventListener('click', () => {
+        if (typeof playSfx === 'function') playSfx('clickSound');
+
+        const currentState = localStorage.getItem('musicEnabled') === 'true';
+        localStorage.setItem('musicEnabled', !currentState);
+
+        updateMusicUI(); 
+    });
+}
 
 
 function initSystems() {
