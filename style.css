@@ -661,3 +661,26 @@ body.light-mode .glow-btn:disabled {
     background: #cbd5e0 !important;
     color: #a0aec0 !important;
 }
+/* --- Score/Funds Pill Styling --- */
+.score-pill {
+    border-color: rgba(0, 255, 68, 0.3); /* Neon Green base */
+}
+
+.score-pill:hover { 
+    border-color: #00ff44; 
+    box-shadow: 0 0 15px rgba(0, 255, 68, 0.4); 
+}
+
+.score-pill .stat-icon { background: rgba(0, 255, 68, 0.1); }
+.score-pill .stat-value { color: #00ff44; text-shadow: 0 0 8px #00ff44; }
+
+/* Light Mode Overrides for Score Pill */
+body.light-mode .score-pill:hover {
+    border-color: #cbd5e0;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+body.light-mode .score-pill .stat-value {
+    color: #38a169; /* Flat, professional green */
+    text-shadow: none;
+}

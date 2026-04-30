@@ -191,12 +191,13 @@ historyBox.appendChild(attemptLine);
     }
 
 function endGame(win, finalScore) {
+      updateLiveScoreDisplay();
     submitBtn.disabled = true;
     const winModal = document.getElementById('win-modal');
     const winTitle = document.getElementById('win-title');
     const winMsg = document.getElementById('win-message');
     const finalScoreText = document.getElementById('final-score-display');
-    
+  
     // Play the win sound if the mission is successful
     if (win) {
         playSfx('winSound');
@@ -436,7 +437,7 @@ if (confirmHintBtn) {
             // Deduct and Save
             score -= 20;
             localStorage.setItem('score', score);
-            
+            updateLiveScoreDisplay();
             // Reveal the letter
             const revealedLetter = secretWord[hintIndex];
             const targetTile = tiles[hintIndex];
@@ -551,7 +552,7 @@ if (musicToggleBtn) {
 function initSystems() {
     applyTheme();
     startBgMusic(); 
-    
+    updateLiveScoreDisplay();
     const highScore = localStorage.getItem('highScore') || 0;
     const streak = localStorage.getItem('winStreak') || 0;
     if (document.getElementById('high-score-val')) {
@@ -567,6 +568,14 @@ function startBgMusic() {
         const savedVol = localStorage.getItem('gameVolume') || 0.5;
         music.volume = savedVol * 0.3; 
         music.play().catch(e => console.log("Waiting for user interaction to play music..."));
+    }
+}
+// --- Live Score HUD Sync ---
+function updateLiveScoreDisplay() {
+    const currentScore = parseInt(localStorage.getItem('score')) || 0;
+    const scoreValEl = document.getElementById('current-score-val');
+    if (scoreValEl) {
+        scoreValEl.innerText = currentScore;
     }
 }
 // Call init on load
