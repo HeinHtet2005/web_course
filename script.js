@@ -85,3 +85,121 @@ if (helpBtnHome) helpBtnHome.addEventListener('click', openHelp);
 if (helpBtnGame) helpBtnGame.addEventListener('click', openHelp);
 if (closeHelp) closeHelp.addEventListener('click', hideHelp);
 if (gotItBtn) gotItBtn.addEventListener('click', hideHelp);
+
+// --- Logout Logic ---
+if (exitBtn) {
+    exitBtn.addEventListener('click', () => { exitModal.style.display = 'flex'; });
+    document.getElementById('cancel-exit').addEventListener('click', () => { exitModal.style.display = 'none'; });
+    document.getElementById('confirm-exit').addEventListener('click', () => {
+        localStorage.removeItem('playerName');
+        location.reload();
+    });
+}
+
+// --- Core Gameplay ---
+const submitBtn = document.getElementById("submit-btn");
+const historyBox = document.getElementById("history");
+const resetBtn = document.getElementById("reset-btn");
+const tiles = document.querySelectorAll(".tile");
+
+let currentGuess = "";
+let secretWord = "";
+let attempts = 0;
+const maxAttempts = 6;
+
+if (submitBtn) {
+    const words = ["PLANE", "CRANE", "LIGHT", "BRAVE", "GHOST", "NEONS", "CYBER", "SPACE"];
+    const today = new Date().toISOString().slice(0, 10);
+    
+    if (localStorage.getItem("dailyDate") === today) {
+        secretWord = localStorage.getItem("dailyWord");
+    } else {
+        secretWord = words[Math.floor(Math.random() * words.length)];
+        localStorage.setItem("dailyWord", secretWord);
+        localStorage.setItem("dailyDate", today);
+    }
+
+    let score = parseInt(localStorage.getItem("score")) || 0;
+
+    function handleGuess() {
+        if (submitBtn.disabled || currentGuess.length !== 5) return;
+
+        attempts++;
+        updateKeyboardUI(currentGuess);
+
+        const result = checkMatch(currentGuess);       
+        const attemptLine = document.createElement("div");
+        attemptLine.classList.add("history-item");
+        attemptLine.innerText = `${currentGuess} → ${result.pos} Pos | ${result.let} Letter`;
+        historyBox.appendChild(attemptLine);
+
+        if (result.pos === 5) {
+                // 1. Get fresh score, add reward, and save
+                let currentScore = parseInt(localStorage.getItem("score")) || 0;
+                currentScore += 10;
+                localStorage.setItem("score", currentScore);
+                
+                // 2. Trigger the end game with the NEW score
+                endGame(true, currentScore); 
+            } else if (attempts >= maxAttempts) {
+                // Trigger end game with current score on failure
+                let currentScore = parseInt(localStorage.getItem("score")) || 0;
+                endGame(false, currentScore);
+            }
+        currentGuess = "";
+        updateTiles();
+    }
+
+    function checkMatch(guess) {
+        let pos = 0, letCount = 0;
+        let sArr = secretWord.split(""), gArr = guess.split("");
+        gArr.forEach((l, i) => { if (l === sArr[i]) { pos++; sArr[i] = null; gArr[i] = null; } });
+        gArr.forEach((l) => { if (l && sArr.includes(l)) { letCount++; sArr[sArr.indexOf(l)] = null; } });
+        return { pos, let: letCount };
+    }
+
+    function endGame(win, finalScore) {
+        submitBtn.disabled = true;
+        const winModal = document.getElementById('win-modal');
+        const winTitle = document.getElementById('win-title');
+        const winMsg = document.getElementById('win-message');
+        const finalScoreText = document.getElementById('final-score-display');
+        
+        // Refresh the score from localStorage one last time to be safe
+        const verifiedScore = localStorage.getItem("score") || 0;
+
+        winModal.style.display = 'flex';
+        winTitle.innerText = win ? "MISSION SUCCESS!" : "MISSION FAILED";
+        winTitle.style.color = win ? "#00ff44" : "#ff4444";
+        winMsg.innerText = win ? `You decoded: ${secretWord}` : `Target was: ${secretWord}`;
+        
+        // FIX: This line now uses the verified score from storage
+        finalScoreText.innerText = `TOTAL CREDITS: ${verifiedScore}`;
+    }
+
+    function updateTiles() {
+        tiles.forEach((tile, i) => {
+            tile.innerText = currentGuess[i] || "";
+            tile.classList.toggle("active", !!currentGuess[i]);
+        });
+    }
+
+    function updateKeyboardUI(guess) {
+        const guessArray = guess.split("");
+        const secretArray = secretWord.split("");
+        guessArray.forEach((letter, i) => {
+            const key = document.querySelector(`.key[data-key="${letter}"]`);
+            if (!key) return;
+            if (letter === secretArray[i]) {
+                key.classList.add("correct");
+            } else if (secretWord.includes(letter)) {
+                if (!key.classList.contains("correct")) key.classList.add("present");
+            } else {
+                key.classList.add("absent");
+            }
+        });
+    }
+
+    submitBtn.addEventListener("click", handleGuess);
+    document.getElementById('win-close-btn').addEventListener('click', () => location.reload());
+}
