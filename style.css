@@ -324,7 +324,17 @@ input[type="range"] {
     justify-content: center;
     margin: 5px 0;
 }
+.key:active {
+    transform: scale(0.9); /* Shrinks slightly when clicked */
+    transition: transform 0.05s;
+}
 
+/* Optional: Add a subtle glow when typing on physical keyboard */
+.key.highlight-press {
+    background: #00f0ff !important;
+    color: black !important;
+    box-shadow: 0 0 15px #00f0ff !important;
+}
 .key {
     background: rgba(0, 240, 255, 0.1);
     border: 1px solid #00f0ff;

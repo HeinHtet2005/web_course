@@ -256,6 +256,7 @@ if (keyboard) {
 }
 
 function handleInput(key) {
+    playSfx('typeSound');
     if (key === "ENTER") handleGuess();
     else if (key === "⌫" || key === "BACKSPACE") currentGuess = currentGuess.slice(0, -1);
     else if (currentGuess.length < 5 && /^[A-Z]$/.test(key)) currentGuess += key;
