@@ -2,6 +2,46 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Orbitron', sans-serif; }
 
 body {
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: 0.5px; 
+}
+.game-title,
+.modal-title,
+.agent-credits,
+.stat-value,
+.pos-badge,
+.let-badge {
+    font-family: 'Orbitron', sans-serif;
+}
+
+button, 
+.glow-btn, 
+.start-game-btn, 
+.danger-glow-btn {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    letter-spacing: 2px; 
+}
+
+.agent-label,
+.setting-label,
+.stat-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.key {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+}
+
+.tile {
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+}
+body {
     display: flex; justify-content: center; align-items: center; height: 100vh;
     background: radial-gradient(circle at 20% 30%, #00f0ff22 0%, transparent 40%),
                 linear-gradient(135deg, #000000 0%, #050505 100%);
@@ -298,31 +338,48 @@ body.light-mode .modal-box p, body.light-mode .modal-box li { color: #4a5568; }
 /* =========================================
    HISTORY LOG UI UPGRADE
 ========================================= */
+/* =========================================
+   TOAST-STYLE HISTORY LOG (LEFT SIDE)
+========================================= */
 #history {
-    max-width: 350px;
-    margin: 20px auto;
+    position: fixed;
+    top: 100px; /* Positions it below your Top-Left Stats HUD */
+    left: 20px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+    z-index: 999;
+    pointer-events: none; /* Ensures you can click the background behind the toasts */
 }
 
 .history-item {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    background: rgba(0, 240, 255, 0.05);
-    border: 1px solid rgba(0, 240, 255, 0.3);
-    padding: 12px 15px;
-    border-radius: 8px;
-    animation: slide-up 0.3s ease-out;
+    gap: 15px;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(10px);
+    
+    /* Toast Design: Flat left side with a thick neon accent, rounded right side */
+    border-left: 4px solid #00f0ff; 
+    border-top: 1px solid rgba(0, 240, 255, 0.2);
+    border-right: 1px solid rgba(0, 240, 255, 0.2);
+    border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+    border-radius: 0 12px 12px 0; 
+    
+    padding: 12px 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    
+    /* Snappy entrance animation */
+    animation: slide-in-left 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    pointer-events: auto;
 }
 
 .history-word {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
-    letter-spacing: 3px;
+    letter-spacing: 4px;
     color: #ffffff;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
 }
 
 .history-stats {
@@ -339,49 +396,52 @@ body.light-mode .modal-box p, body.light-mode .modal-box li { color: #4a5568; }
 }
 
 /* Dark Mode Badges */
-.pos-badge {
-    background: rgba(0, 255, 68, 0.1);
-    color: #00ff44;
-    border: 1px solid #00ff44;
-    box-shadow: 0 0 10px rgba(0, 255, 68, 0.2);
-}
+.pos-badge { background: rgba(0, 255, 68, 0.1); color: #00ff44; border: 1px solid #00ff44; box-shadow: 0 0 10px rgba(0, 255, 68, 0.2); }
+.let-badge { background: rgba(255, 255, 0, 0.1); color: #ffff00; border: 1px solid #ffff00; box-shadow: 0 0 10px rgba(255, 255, 0, 0.2); }
 
-.let-badge {
-    background: rgba(255, 255, 0, 0.1);
-    color: #ffff00;
-    border: 1px solid #ffff00;
-    box-shadow: 0 0 10px rgba(255, 255, 0, 0.2);
-}
-
-@keyframes slide-up {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* The Slide-in Animation */
+@keyframes slide-in-left {
+    0% { opacity: 0; transform: translateX(-150%); }
+    100% { opacity: 1; transform: translateX(0); }
 }
 
 /* --- LIGHT MODE OVERRIDES --- */
 body.light-mode .history-item {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+    background: rgba(255, 255, 255, 0.95);
+    border-left: 4px solid #3182ce;
+    border-top: 1px solid #e2e8f0;
+    border-right: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.05);
 }
 
-body.light-mode .history-word {
-    color: #2d3748;
-    text-shadow: none;
-}
+body.light-mode .history-word { color: #1a202c; text-shadow: none; }
+body.light-mode .pos-badge { background: #f0fff4; color: #38a169; border: 1px solid #9ae6b4; box-shadow: none; }
+body.light-mode .let-badge { background: #fffff0; color: #d69e2e; border: 1px solid #f6e05e; box-shadow: none; }
 
-body.light-mode .pos-badge {
-    background: #f0fff4; /* Soft green */
-    color: #38a169;
-    border: 1px solid #9ae6b4;
-    box-shadow: none;
-}
-
-body.light-mode .let-badge {
-    background: #fffff0; /* Soft yellow */
-    color: #d69e2e;
-    border: 1px solid #f6e05e;
-    box-shadow: none;
+/* --- MOBILE RESPONSIVE FIX --- */
+@media screen and (max-width: 768px) {
+    #history {
+        top: 75px; /* Pushes it up slightly on mobile */
+        left: 0; /* Glues it directly to the edge of the screen */
+        gap: 8px;
+    }
+    
+    .history-item {
+        padding: 8px 12px 8px 15px; /* Tighter padding to save space */
+        gap: 10px;
+        border-radius: 0 8px 8px 0;
+    }
+    
+    .history-word {
+        font-size: 13px;
+        letter-spacing: 2px;
+    }
+    
+    .stat-badge {
+        padding: 3px 6px;
+        font-size: 9px;
+    }
 }
 /* =========================================
    FLOATING STATS HUD (BEST & STREAK)
@@ -833,4 +893,47 @@ body.light-mode .premium-slider::-webkit-slider-thumb { background: #3182ce; box
     .agent-details { flex-direction: column; gap: 10px; }
     .agent-info, .agent-stats { align-items: center; }
     .agent-divider { width: 80%; height: 2px; }
+}
+/* =========================================
+   TYPEWRITER EFFECT (WELCOME TEXT)
+========================================= */
+#welcome-text {
+    font-size: 32px;
+    letter-spacing: 5px;
+    margin-bottom: 30px;
+    margin-top: 10px;
+    min-height: 40px; /* Prevents the page layout from jumping before the text types */
+    display: inline-block; /* Required for the cursor to hug the end of the text */
+}
+
+/* The Blinking Cursor */
+.typing-active {
+    border-right: 4px solid #00f0ff; /* Neon Cyan Cursor */
+    padding-right: 8px; /* Space between the last letter and the cursor */
+    animation: blink-cursor 0.8s step-end infinite;
+}
+
+@keyframes blink-cursor {
+    from, to { border-color: transparent; }
+    50% { border-color: #00f0ff; }
+}
+
+/* --- LIGHT MODE OVERRIDES --- */
+body.light-mode .typing-active {
+    border-right-color: #3182ce; /* Professional Flat Blue Cursor */
+    animation: blink-cursor-light 0.8s step-end infinite;
+}
+
+@keyframes blink-cursor-light {
+    from, to { border-color: transparent; }
+    50% { border-color: #3182ce; }
+}
+
+/* Mobile adjustments so the name fits on small screens */
+@media screen and (max-width: 480px) {
+    #welcome-text {
+        font-size: 22px;
+        letter-spacing: 3px;
+        min-height: 30px;
+    }
 }

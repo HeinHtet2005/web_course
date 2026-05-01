@@ -13,12 +13,26 @@ const exitModal = document.getElementById('exit-modal');
 const helpModal = document.getElementById('help-modal');
 const winModal = document.getElementById('win-modal');
 
-// --- Personalized Welcome Logic ---
+
 function setPlayerGreeting() {
+    const welcomeText = document.getElementById('welcome-text');
     const storedName = localStorage.getItem('playerName');
+    const textToType = storedName ? `WELCOME,   ${storedName.toUpperCase()}` : "WELCOME, OPERATIVE";
+    
     if (welcomeText) {
-        // Ensure real player name is shown if it exists in storage
-        welcomeText.innerText = storedName ? `WELCOME, ${storedName.toUpperCase()}!` : "WELCOME PLAYER!";
+        welcomeText.innerText = ""; 
+        welcomeText.classList.add('typing-active', 'gradient-text'); 
+        
+        let i = 0;
+        function typeWriter() {
+            if (i < textToType.length) {
+                welcomeText.innerText += textToType.charAt(i);
+                i++;
+                let typingSpeed = Math.floor(Math.random() * 100) + 50; 
+                setTimeout(typeWriter, typingSpeed);
+            }
+        }
+        setTimeout(typeWriter, 500); 
     }
 }
 setPlayerGreeting();
@@ -130,33 +144,21 @@ const maxAttempts = 6;
 
 if (submitBtn) {
 const words = ["PLANE", "CRANE", "LIGHT", "BRAVE", "GHOST", "NEONS", "CYBER", "SPACE", "AGENT", "LASER", "STARS", "ROBOT"];
-    
-    // 1. NEW LOGIC: True Random Shuffle Function (Fisher-Yates Algorithm)
     function shuffleAndPickWord() {
         for (let i = words.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [words[i], words[j]] = [words[j], words[i]];
         }
-        secretWord = words[0]; // Pick the first word after the array is shuffled
+        secretWord = words[0];
     }
-
-    // Set the initial word when the page first loads
     shuffleAndPickWord();
-function resetBoardForNextRound() {
+    function resetBoardForNextRound() {
         if (typeof playSfx === 'function') playSfx('clickSound');
-        
-        // Shuffle and grab a new secret word for the next round
         shuffleAndPickWord();
-
-        // Reset Game State Variables
         currentGuess = "";
         attempts = 0;
         submitBtn.disabled = false;
-
-        // Clear the UI History Log
         historyBox.innerHTML = "";
-
-        // Clear the Tiles (Removes letters and classes like 'active' or 'hint-reveal')
         tiles.forEach(tile => {
             tile.innerText = "";
             tile.className = "tile"; 
@@ -164,8 +166,6 @@ function resetBoardForNextRound() {
         document.querySelectorAll('.key').forEach(key => {
             key.classList.remove('correct', 'present', 'absent');
         });
-
-        // Hide the Mission Success/Fail Modal
         document.getElementById('win-modal').style.display = 'none';
     }
     let score = parseInt(localStorage.getItem("score")) || 0;
@@ -181,8 +181,6 @@ function resetBoardForNextRound() {
 
         const attemptLine = document.createElement("div");
         attemptLine.classList.add("history-item");
-
-        // NEW: Structured UI for the history log with stat badges
         attemptLine.innerHTML = `
             <span class="history-word">${currentGuess}</span>
             <div class="history-stats">
@@ -191,10 +189,9 @@ function resetBoardForNextRound() {
             </div>
         `;
 
-historyBox.appendChild(attemptLine);
+    historyBox.appendChild(attemptLine);
 
         if (result.pos === 5) {
-                // 1. Get fresh score, add reward, and save
                 let currentScore = parseInt(localStorage.getItem("score")) || 0;
                 currentScore += 10;
                 localStorage.setItem("score", currentScore);
@@ -225,24 +222,16 @@ function endGame(win, finalScore) {
     const winTitle = document.getElementById('win-title');
     const winMsg = document.getElementById('win-message');
     const finalScoreText = document.getElementById('final-score-display');
-  
-    // Play the win sound if the mission is successful
     if (win) {
         playSfx('winSound');
     }
-
-    // Refresh the score from localStorage one last time to be safe
     const verifiedScore = localStorage.getItem("score") || 0;
 
     winModal.style.display = 'flex';
     winTitle.innerText = win ? "MISSION SUCCESS!" : "MISSION FAILED";
     winTitle.style.color = win ? "#00ff44" : "#ff4444";
     winMsg.innerText = win ? `You decoded: ${secretWord}` : `Target was: ${secretWord}`;
-    
-    // FIX: This line now uses the verified score from storage
     finalScoreText.innerText = `TOTAL CREDITS: ${verifiedScore}`;
-    
-    // Optional: Refresh the sidebar leaderboard to show the latest score
     if (typeof updateLeaderboard === "function") {
         updateLeaderboard();
     }
@@ -275,7 +264,6 @@ function endGame(win, finalScore) {
     document.getElementById('win-close-btn').addEventListener('click', resetBoardForNextRound);
 }
 
-// --- Keyboard Interaction ---
 const keyboard = document.getElementById("keyboard");
 if (keyboard) {
     playSfx('clickSound');
@@ -295,7 +283,7 @@ if (keyboard) {
 }
 
 function handleInput(key) {
-    playSfx('keyboardSound'); // Corrected ID
+    playSfx('keyboardSound'); 
     if (key === "ENTER") handleGuess();
     else if (key === "⌫" || key === "BACKSPACE") currentGuess = currentGuess.slice(0, -1);
     else if (currentGuess.length < 5 && /^[A-Z]$/.test(key)) currentGuess += key;
@@ -304,7 +292,6 @@ function handleInput(key) {
 
 document.addEventListener("keydown", (e) => handleInput(e.key.toUpperCase()));
 
-// --- Particles Background ---
 const canvas = document.getElementById("particles");
 if (canvas) {
     const ctx = canvas.getContext("2d");
@@ -331,13 +318,11 @@ if (resetBtn) {
         location.reload();
     });
 }
-// --- NEW: Theme & Sound Systems ---
+
 function initSystems() {
-    // 1. Theme Logic
+
     const savedTheme = localStorage.getItem('theme') || 'dark';
     applyTheme(savedTheme);
-
-    // 2. Scoreboard Logic
     const highScore = localStorage.getItem('highScore') || 0;
     const streak = localStorage.getItem('winStreak') || 0;
     if (document.getElementById('high-score-val')) {
@@ -368,7 +353,7 @@ if (settingsBtn) {
         applyTheme();
     });
 }
-// Settings Event Listeners
+
 document.getElementById('settings-btn')?.addEventListener('click', () => {
     document.getElementById('settings-modal').style.display = 'flex';
 });
@@ -376,9 +361,6 @@ document.getElementById('settings-btn')?.addEventListener('click', () => {
 document.getElementById('close-settings')?.addEventListener('click', () => {
     document.getElementById('settings-modal').style.display = 'none';
 });
-
-
-
 document.getElementById('volume-slider')?.addEventListener('input', (e) => {
     const vol = e.target.value;
     localStorage.setItem('gameVolume', vol);
@@ -392,7 +374,6 @@ function updateWinStats() {
     let currentScore = parseInt(localStorage.getItem('score')) || 0;
     let highScore = parseInt(localStorage.getItem('highScore')) || 0;
     let streak = parseInt(localStorage.getItem('winStreak')) || 0;
-
     streak++;
     if (currentScore > highScore) {
         localStorage.setItem('highScore', currentScore);
@@ -408,23 +389,15 @@ const cancelHintBtn = document.getElementById('cancel-hint-btn');
 const confirmHintBtn = document.getElementById('confirm-hint-btn');
 const hintFundsVal = document.getElementById('hint-funds-val');
 
-// 1. Open the Modal
 if (hintBtn) {
     hintBtn.addEventListener('click', () => {
         if (typeof playSfx === 'function') playSfx('clickSound');
-        
-        // Fetch current score
         let score = parseInt(localStorage.getItem('score')) || 0;
-        
-        // Update the modal text
         if (hintFundsVal) {
             hintFundsVal.innerText = score;
-            // Turn text red if they can't afford it, green if they can
             hintFundsVal.style.color = score >= 20 ? "#00ff44" : "#ff4444";
             hintFundsVal.style.textShadow = score >= 20 ? "0 0 10px #00ff44" : "0 0 10px #ff4444";
         }
-        
-        // Disable the confirm button if they are broke
         if (confirmHintBtn) {
             confirmHintBtn.disabled = score < 20;
             if(score < 20) {
@@ -433,7 +406,6 @@ if (hintBtn) {
                 confirmHintBtn.innerText = "CONFIRM";
             }
         }
-
         if (hintModal) hintModal.style.display = 'flex';
     });
 }
@@ -442,16 +414,10 @@ if (hintBtn) {
 const hideHintModal = () => { if (hintModal) hintModal.style.display = 'none'; };
 if (closeHintBtn) closeHintBtn.addEventListener('click', () => { playSfx('clickSound'); hideHintModal(); });
 if (cancelHintBtn) cancelHintBtn.addEventListener('click', () => { playSfx('clickSound'); hideHintModal(); });
-
-// 3. Execute the Hint (Only when CONFIRM is clicked)
 if (confirmHintBtn) {
     confirmHintBtn.addEventListener('click', () => {
         let score = parseInt(localStorage.getItem('score')) || 0;
-
-        // Security check: Don't allow if less than 20
         if (score < 20) return; 
-
-        // Identify the first empty tile
         let hintIndex = -1;
         for (let i = 0; i < 5; i++) {
             if (!currentGuess[i]) {
@@ -459,71 +425,24 @@ if (confirmHintBtn) {
                 break;
             }
         }
-
-        // If there is an empty tile available
         if (hintIndex !== -1) {
-            // Deduct and Save
             score -= 20;
             localStorage.setItem('score', score);
             updateLiveScoreDisplay();
-            // Reveal the letter
             const revealedLetter = secretWord[hintIndex];
             const targetTile = tiles[hintIndex];
             targetTile.innerText = revealedLetter;
             targetTile.classList.add('hint-reveal');
-            
-            // Update the current guess string
             currentGuess += revealedLetter;
-            
-            // Play a success sound and close modal
             if (typeof playSfx === 'function') playSfx('clickSound'); 
             hideHintModal();
         } else {
-            // Board is already full of letters for this attempt
             alert("Clear some letters first to use a hint!");
             hideHintModal();
         }
     });
 }
-// Toggle Sidebar Logic
-const lbToggle = document.getElementById('leaderboard-toggle');
-const lbSidebar = document.getElementById('leaderboard-sidebar');
-const closeSidebar = document.getElementById('close-sidebar');
 
-lbToggle?.addEventListener('click', () => {
-    lbSidebar.classList.add('open');
-    renderLeaderboard(); // Refresh list when opened
-});
-
-closeSidebar?.addEventListener('click', () => {
-    lbSidebar.classList.remove('open');
-});
-
-function renderLeaderboard() {
-    const listContainer = document.getElementById('leaderboard-list-sidebar');
-    const leaderboard = JSON.parse(localStorage.getItem('leaderboard')) || [];
-    
-    listContainer.innerHTML = "";
-    leaderboard.forEach((entry, index) => {
-        const row = document.createElement('div');
-        row.className = 'leader-row';
-        
-        // Add medal emoji for top 3
-        let medal = "";
-        if(index === 0) medal = "🥇";
-        else if(index === 1) medal = "🥈";
-        else if(index === 2) medal = "🥉";
-
-        row.innerHTML = `
-            <div>
-                <span style="font-size: 12px; opacity: 0.7;">#${index+1}</span>
-                <span style="margin-left: 10px; font-weight: bold;">${entry.name.toUpperCase()}</span>
-            </div>
-            <div style="color: #00f0ff;">${medal} ${entry.score}</div>
-        `;
-        listContainer.appendChild(row);
-    });
-}
 // --- Integrated Audio System ---
 function playSfx(soundId) {
     const sound = document.getElementById(soundId);
@@ -540,19 +459,13 @@ const bgMusic = document.getElementById('bgMusic');
 function updateMusicUI() {
 
     const isMusicOn = localStorage.getItem('musicEnabled') === 'true';
-
-
     if (musicToggleBtn) {
         musicToggleBtn.innerText = isMusicOn ? "ON" : "OFF";
         musicToggleBtn.style.boxShadow = isMusicOn ? "0 0 15px #00f0ff" : "none";
         musicToggleBtn.style.borderColor = isMusicOn ? "#00f0ff" : "#ff00ff";
         musicToggleBtn.style.color = isMusicOn ? "#00f0ff" : "#ff00ff";
     }
-
-
     const bgAudio = document.getElementById('bgSound') || document.getElementById('bgMusic');
-
-
     if (bgAudio) {
         if (isMusicOn) {
             const savedVol = localStorage.getItem('gameVolume') || 0.5;
@@ -563,7 +476,6 @@ function updateMusicUI() {
         }
     }
 }
-
 
 if (musicToggleBtn) {
     musicToggleBtn.addEventListener('click', () => {

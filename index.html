@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GMT NEON WORD</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Particle Background -->
@@ -13,11 +16,7 @@
 
     <!-- MAIN MENU CONTAINER -->
     <div class="main-menu" id="main-menu">
-        
-        <!-- Upgraded Game Title -->
         <h1 class="game-title gradient-text">GUESS<br>MY THOUGHT</h1>
-        
-        <!-- Upgraded Profile/Score Board (Agent Card) -->
         <div id="player-profile" class="agent-card" style="display: none;">
          
             <div class="agent-details">
@@ -101,15 +100,10 @@
         <div class="modal-box premium-modal">
             <h2 class="modal-title">AGENT LOGIN</h2>
             <p class="modal-subtitle">Enter your operative alias to proceed.</p>
-            
-            <!-- Clean, centered input field -->
-            <input type="text" id="player-name" placeholder="ENTER ALIAS..." style="width: 100%; padding: 15px; margin: 20px 0; background: rgba(0, 0, 0, 0.5); border: 1px solid #00f0ff; color: #00f0ff; text-align: center; border-radius: 8px; outline: none; font-size: 16px; text-transform: uppercase; letter-spacing: 2px;">
-            
+            <input type="text" id="player-name" placeholder="ENTER ALIAS..." style="width: 100%; padding: 15px; margin: 20px 0; background: rgba(0, 0, 0, 0.5); border: 1px solid #00f0ff; color: #00f0ff; text-align: center; border-radius: 8px; outline: none; font-size: 16px; text-transform: uppercase; letter-spacing: 2px;">          
             <button id="confirm-btn" class="glow-btn full-width-btn">AUTHENTICATE</button>
         </div>
     </div>
-
-    <!-- EXIT/LOGOUT MODAL (Upgraded to premium theme) -->
     <div id="exit-modal" class="modal-overlay">
         <div class="modal-box premium-modal" style="border-color: #ff4444; box-shadow: 0 10px 40px rgba(255, 68, 68, 0.2);">
             <h2 class="modal-title" style="color: #ff4444;">ABORT MISSION?</h2>
@@ -121,8 +115,6 @@
             </div>
         </div>
     </div>
-
-    <!-- AUDIO AND LOADING -->
     <audio id="bgSound" src="bg_sound.mp3" loop></audio>
     
     <div id="loading-screen" class="loading" style="display: none;">
